@@ -31,7 +31,7 @@ app.use("/superAdmin", superAdminRouter);
 app.use("/category", categoryRouter);
 app.use("/wallpaper", wallpaperRouter);
 // status check
-app.get("/status", isSuperAdminMiddleware, (req, res) => {
+app.get("/status", (req, res) => {
   res.json({ status: "working" }).status(200);
 });
 
