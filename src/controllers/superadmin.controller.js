@@ -41,6 +41,71 @@ export const getAllUsers = asyncHandler(async (req, res) => {
   }
 });
 
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { password, userId } = req.body;
+
+  if (!password || !userId) {
+    res
+      .status(httpStatus.CONFLICT)
+      .json({ message: "Please provide a password & user id" });
+    return;
+  }
+
+  const user = await User.findById(userId).select("+password");
+  if (!user) {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .json({ message: "Something went wrong. can't reset password" });
+    return;
+  }
+
+  try {
+    user.password = password;
+    const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.status(httpStatus.OK).json({
+      message: "Password updated successfully",
+    });
+  } catch (err) {
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Cannot update password" });
+    return;
+  }
+});
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    res
+      .status(httpStatus.CONFLICT)
+      .json({ message: "Please provide a user id" });
+    return;
+  }
+  const user = await User.findById(userId);
+  if (!user) {
+    res
+      .status(httpStatus.NOT_FOUND)
+      .json({ message: "Something went wrong. can't logout" });
+    return;
+  }
+  try {
+    await user.updateOne({ $unset: { refreshToken: 1 } });
+
+    res.status(httpStatus.OK).json({
+      message: "User Logged out",
+    });
+  } catch (err) {
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Cannot logout" });
+    return;
+  }
+});
+
 export const deleteUser = asyncHandler(async (req, res) => {
   try {
     const userId = req.params.id;

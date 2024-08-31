@@ -6,6 +6,8 @@ import {
   deleteUser,
   getAllUsers,
   rejectUser,
+  resetPassword,
+  logoutUser,
 } from "../../controllers/superadmin.controller.js";
 
 const superAdminRouter = Router();
@@ -21,5 +23,9 @@ superAdminRouter.post("/reject/:id", rejectUser);
 superAdminRouter.post("/createUser", createUser);
 
 superAdminRouter.delete("/user/:id", deleteUser);
+
+superAdminRouter.patch("/resetPassword", resetPassword);
+
+superAdminRouter.post("/logoutUser", logoutUser);
 
 export default superAdminRouter;
