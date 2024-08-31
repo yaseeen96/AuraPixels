@@ -61,7 +61,7 @@ export const loginUser = asyncHandler(async (req, res, next) => {
   try {
     const { email, password } = result.data;
     // check if user exists
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email }).select("+password");
     if (!user) {
       res
         .status(httpStatus.UNAUTHORIZED)
@@ -84,6 +84,7 @@ export const loginUser = asyncHandler(async (req, res, next) => {
       .status(httpStatus.OK)
       .json({ accessToken: accessToken, refreshToken: refreshToken });
   } catch (err) {
+    console.log(err);
     res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
       .json({ message: "Something went wrong", error: err });
