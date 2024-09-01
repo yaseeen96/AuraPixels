@@ -79,10 +79,15 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     const refreshToken = user.generateRefreshToken();
     user.refreshToken = refreshToken;
     user.save();
+    const name = user.name;
 
     return res
       .status(httpStatus.OK)
-      .json({ accessToken: accessToken, refreshToken: refreshToken });
+      .json({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        name: name,
+      });
   } catch (err) {
     console.log(err);
     res
