@@ -293,3 +293,29 @@ export const changePassword = asyncHandler(async (req, res) => {
   user.save();
   res.status(httpStatus.OK).json({ message: "Password changed successfully" });
 });
+
+export const verifyToken = asyncHandler(async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    res.status(httpStatus.CONFLICT).json({
+      message: "Please add a bearer token",
+    });
+    return;
+  }
+  try {
+    const verifiedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    // if (verifiedToken.role !== "SuperAdmin") {
+    //   res
+    //     .status(httpStatus.FORBIDDEN)
+    //     .json({ message: "You are not authorised" });
+    //   return;
+    // }
+
+    res.status(httpStatus.OK).json({ message: "token valid" });
+  } catch (err) {
+    res
+      .status(httpStatus.FORBIDDEN)
+      .json({ message: "You are not authorised" });
+    return;
+  }
+});

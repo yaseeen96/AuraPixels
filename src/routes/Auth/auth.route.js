@@ -7,6 +7,7 @@ import {
   resetPassword,
   sendPasswordResetEmail,
   updateProfile,
+  verifyToken,
 } from "../../controllers/user.controller.js";
 import { isAdminMiddleware } from "../../middlewares/auth.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
@@ -32,5 +33,6 @@ authRouter.post(
 authRouter.post("/forgotPassword", sendPasswordResetEmail);
 
 authRouter.patch("/resetPassword/:userId/:token", resetPassword);
+authRouter.get("/verifytoken", verifyToken);
 
 export default authRouter;
